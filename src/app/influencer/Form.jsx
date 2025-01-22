@@ -17,21 +17,28 @@ const Form = () => {
       reader.onerror = (error) => reject(error);
     });
   };
-  
 
   const submit = async (data) => {
-    const formData = new FormData()
+    const formData = new FormData();
+    const filePromises = [];
 
     // Loop through form data and handle file uploads
-    for (const [key, value] of Object.entries(data)) {
+    Object.entries(data).forEach(([key, value]) => {
       if (value instanceof File) {
-        const base64File = await convertToBase64(value);
-        formData.append(key, base64File); // Append base64 encoded file
+        // If value is a file, convert it to base64 and add the promise to the list
+        filePromises.push(
+          convertToBase64(value).then((base64File) => {
+            formData.append(key, base64File); // Append base64 encoded file
+          })
+        );
       } else if (Array.isArray(value)) {
-        value.forEach(async (item, index) => {
+        value.forEach((item, index) => {
           if (item instanceof File) {
-            const base64File = await convertToBase64(item);
-            formData.append(`${key}[${index}]`, base64File); // Append base64 encoded file in array
+            filePromises.push(
+              convertToBase64(item).then((base64File) => {
+                formData.append(`${key}[${index}]`, base64File); // Append base64 encoded file in array
+              })
+            );
           } else {
             formData.append(`${key}[${index}]`, item);
           }
@@ -39,12 +46,15 @@ const Form = () => {
       } else {
         formData.append(key, value); // Append other form data
       }
-    }
+    });
 
-    // Additional static data to append
+    // Add static data to formData
     formData.append("created_by", "web");
     formData.append("type_of_entity", "test");
     formData.append("other_notes", "be polite");
+
+    // Wait for all base64 conversion promises to finish
+    await Promise.all(filePromises);
 
     try {
       const res = await axios({
