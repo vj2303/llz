@@ -19,55 +19,11 @@ const Form = () => {
   };
   
 
-  // const submit = async (data) => {
-  //   const formData = new FormData()
-  //   Object.entries(data).forEach(([key, value]) => {
-  //     if (value instanceof File) {
-  //       formData.append(key, value);
-  //     } else if (Array.isArray(value)) {
-  //       value.forEach((item, index) => {
-  //         formData.append(`${key}[${index}]`, item);
-  //       });
-  //     } else {
-  //       formData.append(key, value);
-  //     }
-  //     formData.append("created_by", "web")
-  //     formData.append("type_of_entity", "test")
-  //     formData.append("other_notes", "be polite")
-  //   });
-
-  //   try {
-  //     const res = await axios({
-  //       method: "post",
-  //       url: `${process.env.NEXT_PUBLIC_HOST}/api/v1/influencer/details/create`,
-  //       data: formData,
-
-  //     })
-  //      reset()
-  //     Swal.fire({
-  //       title: 'Thank you for submitting. Our team will get in touch with you shortly. In the meantime, you can call or WhatsApp us at:',
-  //       icon: 'success',
-  //       html: '<a href="https://api.whatsapp.com/send?phone=918879949404" target="_blank" style="color: #007bff; text-decoration: none;">+91-8879949404</a>',
-  //       showConfirmButton: true,
-  //       allowOutsideClick: true,
-  //       confirmButtonText: "Ok"
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     alert("Could not add lead")
-  //   }
-  // };
-
-
   const submit = async (data) => {
-    const formData = new FormData();
-    
-    // Loop through the data and handle images separately
-    for (const [key, value] of Object.entries(data)) {
+    const formData = new FormData()
+    Object.entries(data).forEach(([key, value]) => {
       if (value instanceof File) {
-        // Convert image to Base64
-        const base64Value = await convertToBase64(value);
-        formData.append(key, base64Value);
+        formData.append(key, value);
       } else if (Array.isArray(value)) {
         value.forEach((item, index) => {
           formData.append(`${key}[${index}]`, item);
@@ -75,21 +31,19 @@ const Form = () => {
       } else {
         formData.append(key, value);
       }
-    }
-    
-    // Add additional data fields
-    formData.append("created_by", "web");
-    formData.append("type_of_entity", "test");
-    formData.append("other_notes", "be polite");
-  
+      formData.append("created_by", "web")
+      formData.append("type_of_entity", "test")
+      formData.append("other_notes", "be polite")
+    });
+
     try {
       const res = await axios({
         method: "post",
         url: `${process.env.NEXT_PUBLIC_HOST}/api/v1/influencer/details/create`,
         data: formData,
-      });
-  
-      reset();
+
+      })
+       reset()
       Swal.fire({
         title: 'Thank you for submitting. Our team will get in touch with you shortly. In the meantime, you can call or WhatsApp us at:',
         icon: 'success',
@@ -100,9 +54,55 @@ const Form = () => {
       });
     } catch (error) {
       console.log(error);
-      alert("Could not add lead");
+      alert("Could not add lead")
     }
   };
+
+
+  // const submit = async (data) => {
+  //   const formData = new FormData();
+    
+  //   // Loop through the data and handle images separately
+  //   for (const [key, value] of Object.entries(data)) {
+  //     if (value instanceof File) {
+  //       // Convert image to Base64
+  //       const base64Value = await convertToBase64(value);
+  //       formData.append(key, base64Value);
+  //     } else if (Array.isArray(value)) {
+  //       value.forEach((item, index) => {
+  //         formData.append(`${key}[${index}]`, item);
+  //       });
+  //     } else {
+  //       formData.append(key, value);
+  //     }
+  //   }
+    
+  //   // Add additional data fields
+  //   formData.append("created_by", "web");
+  //   formData.append("type_of_entity", "test");
+  //   formData.append("other_notes", "be polite");
+  
+  //   try {
+  //     const res = await axios({
+  //       method: "post",
+  //       url: `${process.env.NEXT_PUBLIC_HOST}/api/v1/influencer/details/create`,
+  //       data: formData,
+  //     });
+  
+  //     reset();
+  //     Swal.fire({
+  //       title: 'Thank you for submitting. Our team will get in touch with you shortly. In the meantime, you can call or WhatsApp us at:',
+  //       icon: 'success',
+  //       html: '<a href="https://api.whatsapp.com/send?phone=918879949404" target="_blank" style="color: #007bff; text-decoration: none;">+91-8879949404</a>',
+  //       showConfirmButton: true,
+  //       allowOutsideClick: true,
+  //       confirmButtonText: "Ok"
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     alert("Could not add lead");
+  //   }
+  // };
   
 
   const formFields = [
