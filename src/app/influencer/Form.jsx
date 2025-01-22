@@ -9,7 +9,6 @@ import Swal from 'sweetalert2'
 const Form = () => {
   const { register, control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
 
-  // Convert file to Base64
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -21,14 +20,10 @@ const Form = () => {
   
 
   const submit = async (data) => {
-    const formData = new FormData();
-
-    // Loop through form fields and handle files (convert to Base64) and others
-    for (const [key, value] of Object.entries(data)) {
+    const formData = new FormData()
+    Object.entries(data).forEach(([key, value]) => {
       if (value instanceof File) {
-        // Convert the file to Base64
-        const base64Value = await convertToBase64(value);
-        formData.append(key, base64Value);
+        formData.append(key, value);
       } else if (Array.isArray(value)) {
         value.forEach((item, index) => {
           formData.append(`${key}[${index}]`, item);
@@ -36,21 +31,19 @@ const Form = () => {
       } else {
         formData.append(key, value);
       }
-    }
-
-    // Append additional data fields
-    formData.append("created_by", "web");
-    formData.append("type_of_entity", "test");
-    formData.append("other_notes", "be polite");
+      formData.append("created_by", "web")
+      formData.append("type_of_entity", "test")
+      formData.append("other_notes", "be polite")
+    });
 
     try {
       const res = await axios({
         method: "post",
         url: `${process.env.NEXT_PUBLIC_HOST}/api/v1/influencer/details/create`,
         data: formData,
-      });
 
-      reset();
+      })
+       reset()
       Swal.fire({
         title: 'Thank you for submitting. Our team will get in touch with you shortly. In the meantime, you can call or WhatsApp us at:',
         icon: 'success',
@@ -61,9 +54,11 @@ const Form = () => {
       });
     } catch (error) {
       console.log(error);
-      alert("Could not add lead");
+      alert("Could not add lead")
     }
   };
+
+
 
   const formFields = [
     { name: 'name', label: 'Name*', type: 'text', validation: { required: "Name is required" } },
@@ -111,6 +106,7 @@ const Form = () => {
   return (
     <div className='my-8  max-w-[1200px] mx-auto'>
       <h2 className='font-semibold text-[20px] sm:text-[30px] pb-4 pl-5'>Join our community </h2>
+      {/* <p className='mb-[30px] text-[10px] text-[#707070] text-center'>(All fields are mandatory)</p> */}
 
       <form onSubmit={handleSubmit(submit)} className='mx-[22px] text-[16px] flex flex-col gap-[14px]'>
         {formFields.map((field, index) => (
@@ -131,7 +127,10 @@ const Form = () => {
                 >
                   <span className='sm:text-[16px] text-[14px]'>{field.label}</span>
                 </label>
+
+
               </div>
+
             )}
 
             {field.type === 'file' &&
@@ -144,19 +143,19 @@ const Form = () => {
                     label={field.label}
                     fileType={field.fileType}
                     withExample={true}
-                    onChange={async (e) => {
+                    onChange={(e) => {
                       const file = e.target.files[0];
-                      const base64File = await convertToBase64(file); // Convert file to Base64
-                      onChange(base64File); // Pass Base64 value to react-hook-form
+                      onChange(file); // Pass the file to react-hook-form
                     }}
                     name={field.name}
                     value={value}
                     exampleImage={field.exampleImage}
+                  // exampleImage='/1.png'
                   />
                 )}
               />
             }
-
+            {/* {errors[field.name] && <p className="text-red-500 text-sm mt-1">{errors[field.name].message}</p>} */}
             {(errors[field.name] || errors["salon_contacts"]) && <p className="text-red-500 text-sm mt-1">{errors[field.name]?.message || errors["salon_contacts"][field.name.split(".")[field.name.split.length - 1]]?.message}</p>}
           </div>
         ))}
@@ -164,7 +163,7 @@ const Form = () => {
         <button type="submit" className='bg-[#72B5EC] sm:w-[70%] text-white font-semibold text-[16px] px-[50px] py-[15px] rounded-lg flex justify-center'>
           {
             isSubmitting ? 
-            <svg aria-hidden="true" className="w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg aria-hidden="true" class="w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
               <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
             </svg> :
