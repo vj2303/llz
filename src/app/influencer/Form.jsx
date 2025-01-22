@@ -9,11 +9,16 @@ import Swal from 'sweetalert2'
 const Form = () => {
   const { register, control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
 
+  // Convert file to base64 without the prefix
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
+      reader.onload = () => {
+        // Strip out the 'data:image/png;base64,' part
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
       reader.onerror = (error) => reject(error);
     });
   };
@@ -28,7 +33,7 @@ const Form = () => {
         // If value is a file, convert it to base64 and add the promise to the list
         filePromises.push(
           convertToBase64(value).then((base64File) => {
-            formData.append(key, base64File); // Append base64 encoded file
+            formData.append(key, base64File); // Append base64 encoded file without the prefix
           })
         );
       } else if (Array.isArray(value)) {
