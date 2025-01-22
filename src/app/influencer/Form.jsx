@@ -126,7 +126,7 @@ const Form = () => {
       required: "Follower count is required", 
       pattern: {
         value: /^[0-9]*$/,
-        message: "Only digits are allowed in the follower count"
+        message: "Only numbers are allowed in the follower count"
       }
     } 
   },
