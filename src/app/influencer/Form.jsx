@@ -82,48 +82,82 @@ const Form = () => {
     }
   };
 
-  const formFields = [
-    { name: 'name', label: 'Name*', type: 'text', validation: { required: "Name is required" } },
-    {
-      name: 'contact',
-      label: 'Contact* ',
-      type: 'number',
-      validation: {
-        required: { value: true, message: "Your contact number is required" },
-        minLength: { value: 10, message: "Contact number must contain at least 10 digits" },
-        maxLength: { value: 15, message: "Contact number can contain at most 15 digits" },
-        validate: {
-          isPositive: value => value > 0 || "Contact number cannot be negative",
-          isValidLength: value => (value.toString().length >= 10 && value.toString().length <= 15) || "Contact number must be between 10 to 15 digits"
-        }
+ const formFields = [
+  { 
+    name: 'name', 
+    label: 'Name*', 
+    type: 'text', 
+    validation: { required: "Name is required" } 
+  },
+  {
+    name: 'contact',
+    label: 'Contact* ',
+    type: 'number',
+    validation: {
+      required: { value: true, message: "Your contact number is required" },
+      minLength: { value: 10, message: "Contact number must contain at least 10 digits" },
+      maxLength: { value: 15, message: "Contact number can contain at most 15 digits" },
+      pattern: {
+        value: /^[0-9]{10,15}$/,
+        message: "Contact number must be a valid number between 10 to 15 digits"
+      },
+      validate: {
+        isPositive: value => value > 0 || "Contact number cannot be negative",
       }
-    },
-    { name: 'location', label: 'Where are you based?* Area, city', type: 'text', validation: { required: "Location is required" } },
-    { name: 'handle', label: 'Your Instagram / Youtube handle*', type: 'text', validation: { required: "Instagram / Youtube handle is required" } },
-    { name: 'followers', label: 'Approx followers / subscribers* ', type: 'text', validation: { required: "Follower count is required" } },
-    {
-      name: 'followers_ratio_image',
-      label: 'Attach screenshot of Men Women followers ratio (Optional)',
-      type: 'file',
-      fileType: "image/*",
-      exampleImage: '/men-women-ratio.jpeg'
-    },
-    {
-      name: 'top_cities_image',
-      label: 'Attach screenshot of Top cities (Optional)',
-      type: 'file',
-      fileType: "image/*",
-      exampleImage: '/cities.jpeg'
-    },
-    {
-      name: 'age_range_image',
-      label: 'Attach screenshot of Age range (Optional)',
-      type: 'file',
-      fileType: "image/*",
-      exampleImage: '/Age-range.jpeg'
-    },
-    { name: 'about', label: 'Tell us about you and your audience (optional)', type: 'text' },
-  ];
+    }
+  },
+  { 
+    name: 'location', 
+    label: 'Where are you based?* Area, city', 
+    type: 'text', 
+    validation: { required: "Location is required" } 
+  },
+  { 
+    name: 'handle', 
+    label: 'Your Instagram / Youtube handle*', 
+    type: 'text', 
+    validation: { required: "Instagram / Youtube handle is required" } 
+  },
+  { 
+    name: 'followers', 
+    label: 'Approx followers / subscribers* ', 
+    type: 'text', 
+    validation: { 
+      required: "Follower count is required", 
+      pattern: {
+        value: /^[0-9]*$/,
+        message: "Only digits are allowed in the follower count"
+      }
+    } 
+  },
+  {
+    name: 'followers_ratio_image',
+    label: 'Attach screenshot of Men Women followers ratio (Optional)',
+    type: 'file',
+    fileType: "image/*",
+    exampleImage: '/men-women-ratio.jpeg'
+  },
+  {
+    name: 'top_cities_image',
+    label: 'Attach screenshot of Top cities (Optional)',
+    type: 'file',
+    fileType: "image/*",
+    exampleImage: '/cities.jpeg'
+  },
+  {
+    name: 'age_range_image',
+    label: 'Attach screenshot of Age range (Optional)',
+    type: 'file',
+    fileType: "image/*",
+    exampleImage: '/Age-range.jpeg'
+  },
+  { 
+    name: 'about', 
+    label: 'Tell us about you and your audience (optional)', 
+    type: 'text' 
+  },
+];
+
 
   return (
     <div className='my-8 max-w-[1200px] mx-auto'>
